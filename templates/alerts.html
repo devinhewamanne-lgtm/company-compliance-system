@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Renewal Alerts</title>
+</head>
+<body>
+
+<h1>Renewal Alerts</h1>
+
+<table border="1">
+
+<tr>
+    <th>Company</th>
+    <th>Document</th>
+    <th>Expiry Date</th>
+    <th>Days Left</th>
+</tr>
+
+{% for alert in alerts %}
+<tr>
+    <td>{{ alert.company }}</td>
+    <td>{{ alert.document }}</td>
+    <td>{{ alert.expiry }}</td>
+    <td>{{ alert.days_left }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html> 
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+</head>
+<body>
+
+<h1>{{ title }}</h1>
+
+<table border="1">
+
+<tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Expiry Date</th>
+</tr>
+
+{% for doc in documents %}
+
+<tr>
+    <td>{{ doc['document_name'] }}</td>
+    <td>{{ doc['document_type'] }}</td>
+    <td>{{ doc['expiry_date'] }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>

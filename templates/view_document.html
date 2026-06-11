@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Document</title>
+</head>
+<body>
+
+<h1>Document Details</h1>
+
+<p><strong>ID:</strong> {{ document['id'] }}</p>
+
+<p><strong>Company ID:</strong> {{ document['company_id'] }}</p>
+
+<p><strong>Document Name:</strong> {{ document['document_name'] }}</p>
+
+<p><strong>Issue Date:</strong> {{ document['issue_date'] }}</p>
+
+<p><strong>Expiry Date:</strong> {{ document['expiry_date'] }}</p>
+
+<p><strong>Reminder Days:</strong> {{ document['reminder_days'] }}</p>
+
+<br>
+
+<a href="/documents">
+    Back to Documents
+</a>
+
+</body>
+</html>

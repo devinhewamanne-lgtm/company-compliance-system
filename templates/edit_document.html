@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Document</title>
+</head>
+<body>
+
+<h1>Edit Document</h1>
+
+<form method="POST">
+
+    <label>Document Name</label><br>
+    <input type="text"
+           name="document_name"
+           value="{{ document['document_name'] }}">
+    <br><br>
+
+    <label>Issue Date</label><br>
+    <input type="date"
+           name="issue_date"
+           value="{{ document['issue_date'] }}">
+    <br><br>
+
+    <label>Expiry Date</label><br>
+    <input type="date"
+           name="expiry_date"
+           value="{{ document['expiry_date'] }}">
+    <br><br>
+
+    <label>Reminder Days</label><br>
+    <input type="number"
+           name="reminder_days"
+           value="{{ document['reminder_days'] }}">
+    <br><br>
+
+    <button type="submit">
+        Update Document
+    </button>
+
+</form>
+
+</body>
+</html>

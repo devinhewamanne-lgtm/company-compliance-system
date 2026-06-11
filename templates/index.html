@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-header">
+    <h1>Welcome 👋</h1>
+    <p>Manage companies, documents and alerts from one place.</p>
+</div>
+
+<div class="quick-grid">
+
+    <a href="/companies" class="quick-card">
+        <i class="ti ti-building"></i>
+        <h3>Companies</h3>
+        <p>Manage company records</p>
+    </a>
+
+    <a href="/documents" class="quick-card">
+        <i class="ti ti-file-description"></i>
+        <h3>Documents</h3>
+        <p>Track all documents</p>
+    </a>
+
+    <a href="/alerts" class="quick-card">
+        <i class="ti ti-bell"></i>
+        <h3>Alerts</h3>
+        <p>View renewal alerts</p>
+    </a>
+
+    <a href="/audit-logs" class="quick-card">
+        <i class="ti ti-history"></i>
+        <h3>Audit Logs</h3>
+        <p>Monitor activity</p>
+    </a>
+
+    <a href="/dashboard" class="quick-card">
+    <i class="ti ti-layout-dashboard"></i>
+    <h3>Dashboard</h3>
+    <p>View system overview</p>
+</a>
+
+<a href="/logout" class="quick-card">
+    <i class="ti ti-logout"></i>
+    <h3>Logout</h3>
+    <p>Sign out securely</p>
+</a>
+
+</div>
+
+
+{% endblock %}
+

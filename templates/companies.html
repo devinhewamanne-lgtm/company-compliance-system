@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Companies</title>
+</head>
+<body>
+
+<h1>Company List</h1>
+
+<table border="1">
+
+<tr>
+    <th>ID</th>
+    <th>Company Name</th>
+    <th>Registration No</th>
+    <th>Contact Person</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Actions</th>
+</tr>
+
+{% for company in companies %}
+
+<tr>
+    <td>{{ company['id'] }}</td>
+    <td>{{ company['company_name'] }}</td>
+    <td>{{ company['registration_number'] }}</td>
+    <td>{{ company['contact_person'] }}</td>
+    <td>{{ company['email'] }}</td>
+    <td>{{ company['phone'] }}</td>
+
+    <td>
+        <a href="/edit-company/{{ company['id'] }}">Edit</a>
+        |
+        <a href="/delete-company/{{ company['id'] }}">Delete</a>
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>

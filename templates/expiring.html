@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expiring Documents</title>
+</head>
+<body>
+
+<h1>Expiring Documents</h1>
+
+<table border="1">
+
+<tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Expiry Date</th>
+</tr>
+
+{% for doc in documents %}
+
+<tr>
+    <td>{{ doc['document_name'] }}</td>
+    <td>{{ doc['document_type'] }}</td>
+    <td>{{ doc['expiry_date'] }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>

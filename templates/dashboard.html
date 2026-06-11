@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card bg-primary text-white shadow">
+            <div class="card-body">
+                <h5>Total Companies</h5>
+                <h2>{{ companies|length }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-success text-white shadow">
+            <div class="card-body">
+                <h5>Active</h5>
+                <h2>{{ active_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark shadow">
+            <div class="card-body">
+                <h5>Expiring Soon</h5>
+                <h2>{{ expiring_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-danger text-white shadow">
+            <div class="card-body">
+                <h5>Expired</h5>
+                <h2>{{ expired_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="p-4 mb-4 rounded text-white"
+     style="background: linear-gradient(135deg,#667eea,#764ba2);">
+    <h2> Compliance Dashboard</h2>
+    <p class="mb-0">Monitor company registrations and renewals</p>
+</div>
+
+<table border="1" cellpadding="10">
+<tr>
+    <th>Total Companies</th>
+    <th>Total Documents</th>
+    <th>Expiring Soon</th>
+    <th>Expired</th>
+</tr>
+
+<tr>
+    <td>{{ total_companies }}</td>
+    <td>{{ total_documents }}</td>
+    <td>{{ expiring_count }}</td>
+    <td>{{ expired_count }}</td>
+</tr>
+</table>
+
+<br>
+
+<div class="row mt-4">
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Total Companies</h5>
+<h2>{{ total_companies }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Total Documents</h5>
+<h2>{{ total_documents }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Expiring Soon</h5>
+<h2>{{ expiring_count }}</h2>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<div class="card-body">
+<h5>Expired</h5>
+<h2>{{ expired_count }}</h2>
+</div>
+</div>
+</div>
+
+</div>
+
+{% if alerts %}
+
+<div style="
+background:#fff3cd;
+padding:15px;
+margin-bottom:20px;
+border:1px solid #ffeeba;
+border-radius:5px;
+">
+
+<h3>Renewal Alerts</h3>
+
+<ul>
+
+{% for alert in alerts %}
+
+<li>
+<strong>{{ alert.company_name }}</strong>
+-
+{{ alert.document_name }}
+expires in
+<strong>{{ alert.days_left }}</strong>
+day(s)
+on
+{{ alert.expiry_date }}
+</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

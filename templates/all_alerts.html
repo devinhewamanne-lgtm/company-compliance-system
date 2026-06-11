@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <h1>🔔 Renewal Alerts</h1>
+
+    <div>
+
+        <a href="/" class="home-btn">
+            🏠 Home
+        </a>
+
+    </div>
+
+</div>
+
+<div class="stats-card">
+    <h2>{{ alerts|length }}</h2>
+    <p>Documents Requiring Attention</p>
+</div>
+
+<div class="table-container">
+
+<table class="alert-table">
+
+    <tr>
+        <th>Company</th>
+        <th>Document</th>
+        <th>Expiry Date</th>
+        <th>Days Left</th>
+        <th>Status</th>
+    </tr>
+
+    {% for alert in alerts %}
+
+    <tr>
+
+        <td>{{ alert.company_name }}</td>
+
+        <td>{{ alert.document_name }}</td>
+
+        <td>{{ alert.expiry_date }}</td>
+
+        <td>{{ alert.days_left }}</td>
+
+        <td>
+
+            {% if alert.days_left < 0 %}
+
+                <span class="status-expired">
+                    🔴 Expired
+                </span>
+
+            {% elif alert.days_left <= 7 %}
+
+                <span class="status-warning">
+                    🟠 Urgent
+                </span>
+
+            {% else %}
+
+                <span class="status-active">
+                    🟢 Upcoming
+                </span>
+
+            {% endif %}
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+</div>
+
+{% endblock %}
