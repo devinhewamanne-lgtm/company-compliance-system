@@ -194,22 +194,24 @@ body { font-family: 'Inter', sans-serif; background: #f5f7fa; }
 }
 
 .quick-card{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    text-decoration:none;
-    color:#1a2a4a;
-    box-shadow:0 4px 15px rgba(0,0,0,0.08);
-    transition:all 0.3s ease;
+    background:rgba(255,255,255,.92);
+
+    border-radius:20px;
+
+    transition:.3s;
+
+    border:none;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.15);
 }
 
 .quick-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    transform:translateY(-10px);
 }
 
 .quick-card i{
-    font-size:40px;
+    font-size:55px;
     color:#185fa5;
     margin-bottom:15px;
 }
@@ -313,10 +315,18 @@ body { font-family: 'Inter', sans-serif; background: #f5f7fa; }
 }
 
 .table-container{
-    background:white;
-    border-radius:20px;
+
+    background:rgba(255,255,255,.96);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:25px;
+
     overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    box-shadow:
+    0 20px 40px rgba(0,0,0,.12);
+
 }
 
 .alert-table{
@@ -482,3 +492,358 @@ body { font-family: 'Inter', sans-serif; background: #f5f7fa; }
     box-shadow: 0 8px 20px rgba(79,70,229,.3);
 }
 
+.stat-card{
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-10px);
+}
+
+.stat-card i{
+    color:#0f5ba7;
+}
+
+.hero-content{
+    max-width:700px;
+}
+
+.hero-content h1{
+    font-size:60px;
+}
+
+.hero-content p{
+    font-size:22px;
+}
+
+.hero-section{
+    height:500px;
+    background:
+    linear-gradient(rgba(0,0,0,.5),
+    rgba(0,0,0,.5)),
+    url('/static/images/hero1.png');
+
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+
+    color:white;
+    padding:60px;
+}
+
+
+.main-area{
+    padding:20px 24px;
+    overflow-y:auto;
+    flex:1;
+
+    background:
+    linear-gradient(
+        rgba(15,23,42,0.80),
+        rgba(15,23,42,0.80)
+    ),
+    url('/static/images/dashboard-bg.jpg');
+
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+}
+
+.hero-banner{
+    background:transparent;
+    border:none;
+    backdrop-filter:none;
+
+    max-width:900px;
+    margin:0 auto 40px auto;
+
+    text-align:center;
+    color:white;
+}
+
+.hero-banner h1{
+    font-size:72px;
+    font-weight:700;
+    line-height:1.1;
+}
+
+.hero-banner p{
+    font-size:24px;
+    max-width:700px;
+    margin:auto;
+    line-height:1.8;
+}
+
+.hero-section{
+
+    height:550px;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,.55),
+        rgba(0,0,0,.55)
+    ),
+    url('/static/images/documentHero.jpg');
+
+    background-size:cover;
+    background-position:center;
+
+    border-radius:25px;
+
+    display:flex;
+    align-items:center;
+
+    margin-bottom:30px;
+
+}
+
+.hero-overlay{
+
+    padding:60px;
+
+    color:white;
+
+    max-width:700px;
+
+}
+
+.hero-overlay h1{
+
+    font-size:52px;
+
+    margin-bottom:20px;
+
+}
+
+.hero-overlay p{
+
+    font-size:22px;
+
+    margin-bottom:30px;
+
+}
+
+.hero-btn{
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:14px 24px;
+
+    text-decoration:none;
+
+    border-radius:12px;
+
+    margin-right:10px;
+
+    font-weight:bold;
+
+}
+
+.hero-btn-light{
+
+    background:white;
+
+    color:#111827;
+
+    padding:14px 24px;
+
+    text-decoration:none;
+
+    border-radius:12px;
+
+    font-weight:bold;
+
+}
+
+.company-hero{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,.70),
+        rgba(0,0,0,.70)
+    ),
+    url('/static/images/addCompany.jpeg');
+
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+
+    padding-left:120px;
+}
+
+.company-left{
+
+    width:650px;
+
+    color:white;
+
+    z-index:2;
+}
+
+.company-left h1{
+
+    font-size:60px;
+
+    color:white;
+
+    margin-bottom:20px;
+}
+
+.company-left p{
+
+    color:#e2e8f0;
+
+    font-size:20px;
+
+    margin-bottom:30px;
+
+    line-height:1.8;
+}
+
+.company-left h1{
+    font-size:3.5rem;
+    margin-bottom:20px;
+}
+
+.company-left p{
+    color:#d1d5db;
+    margin-bottom:30px;
+    line-height:1.8;
+}
+
+.form-row{
+    display:flex;
+    gap:15px;
+    margin-bottom:15px;
+}
+
+.form-row input{
+    flex:1;
+}
+
+.company-left input,
+.company-left textarea{
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(10px);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    color:white;
+
+    width:100%;
+
+    padding:15px;
+
+    margin-bottom:15px;
+
+    border-radius:12px;
+}
+
+.company-left input::placeholder,
+.company-left textarea::placeholder{
+    color:#cbd5e1;
+}
+.save-btn{
+    background:#facc15;
+    color:black;
+    border:none;
+    padding:15px 35px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.home-btn{
+    border:2px solid white;
+    color:white;
+    text-decoration:none;
+    padding:15px 35px;
+    border-radius:8px;
+}
+
+.hero{
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,.65),
+        rgba(0,0,0,.65)
+    ),
+    url("../static/images/company-hero.jpg");
+
+    background-size:cover;
+    background-position:center;
+}
+
+.overlay{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+}
+
+.content{
+    width:600px;
+    margin-left:120px;
+    color:white;
+}
+
+.content h1{
+    font-size:60px;
+    margin-bottom:20px;
+}
+
+.content p{
+    font-size:18px;
+    line-height:1.8;
+    margin-bottom:30px;
+    color:#d1d5db;
+}
+
+.content input,
+.content textarea{
+    width:100%;
+    padding:15px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:8px;
+}
+
+.content textarea{
+    height:100px;
+}
+
+.btns{
+    display:flex;
+    gap:15px;
+}
+
+.save-btn{
+    background:#facc15;
+    color:black;
+    border:none;
+    padding:15px 35px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.home-btn{
+    color:white;
+    text-decoration:none;
+    border:2px solid white;
+    padding:15px 35px;
+    border-radius:8px;
+}

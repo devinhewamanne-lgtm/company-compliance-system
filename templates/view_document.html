@@ -1,29 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>View Document</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}View Document — ComplianceNet{% endblock %}
+{% block topbar_title %}Document Detail{% endblock %}
 
-<h1>Document Details</h1>
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Document Detail</h1>
+    <p>Full information for this compliance document</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    {% if session.get('role') == 'admin' %}
+    <a href="/edit-document/{{ document.id }}" class="btn btn-outline btn-sm">✏️ Edit</a>
+    {% endif %}
+    <a href="/documents" class="btn btn-outline btn-sm">← Back</a>
+  </div>
+</div>
 
-<p><strong>ID:</strong> {{ document['id'] }}</p>
-
-<p><strong>Company ID:</strong> {{ document['company_id'] }}</p>
-
-<p><strong>Document Name:</strong> {{ document['document_name'] }}</p>
-
-<p><strong>Issue Date:</strong> {{ document['issue_date'] }}</p>
-
-<p><strong>Expiry Date:</strong> {{ document['expiry_date'] }}</p>
-
-<p><strong>Reminder Days:</strong> {{ document['reminder_days'] }}</p>
-
-<br>
-
-<a href="/documents">
-    Back to Documents
-</a>
-
-</body>
-</html>
+<div class="card" style="max-width:600px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Document Name</div>
+      <div style="font-size:16px;font-weight:700;color:var(--white)">{{ document.document_name }}</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Document ID</div>
+      <div style="font-size:16px;font-weight:700;color:var(--white)">#{{ document.id }}</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Issue Date</div>
+      <div style="font-size:15px;color:var(--text)">{{ document.issue_date or '—' }}</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Expiry Date</div>
+      <div style="font-size:15px;color:var(--text)">{{ document.expiry_date }}</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Reminder</div>
+      <div style="font-size:15px;color:var(--text)">{{ document.reminder_days }} days before expiry</div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Company ID</div>
+      <div style="font-size:15px;color:var(--text)">{{ document.company_id }}</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

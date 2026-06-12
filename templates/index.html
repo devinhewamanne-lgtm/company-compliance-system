@@ -1,54 +1,167 @@
-{% extends "base.html" %}
-
-{% block title %}Dashboard{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Home — ComplianceNet{% endblock %}
+{% block topbar_title %}Home{% endblock %}
 
 {% block content %}
+<style>
+  .hero-section {
+    position: relative;
+    background:
+      linear-gradient(100deg, rgba(10,22,40,0.97) 0%, rgba(10,22,40,0.88) 35%, rgba(10,22,40,0.35) 70%, rgba(10,22,40,0.15) 100%),
+      url('{{ url_for('static', filename='images/hero1.png') }}');
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 64px 52px;
+    margin-bottom: 32px;
+    overflow: hidden;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(26,110,247,0.15);
+    border: 1px solid rgba(26,110,247,0.3);
+    padding: 5px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; color: var(--blue-light);
+    margin-bottom: 20px;
+  }
+  .hero-title {
+    font-size: 38px; font-weight: 800; color: var(--white);
+    line-height: 1.15; letter-spacing: -0.5px;
+    margin-bottom: 14px;
+    max-width: 500px;
+  }
+  .hero-title .accent {
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-desc {
+    font-size: 15px; color: var(--muted);
+    max-width: 420px; line-height: 1.7;
+    margin-bottom: 28px;
+  }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-<div class="dashboard-header">
-    <h1>Welcome 👋</h1>
-    <p>Manage companies, documents and alerts from one place.</p>
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .quick-card {
+    background: var(--navy-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .quick-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .quick-card.blue::after  { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  .quick-card.green::after { background: linear-gradient(90deg, var(--green), #34d399); }
+  .quick-card.yellow::after{ background: linear-gradient(90deg, var(--yellow), #fcd34d); }
+  .quick-card.red::after   { background: linear-gradient(90deg, var(--red), #f87171); }
+  .quick-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+  .quick-card:hover::after { opacity: 1; }
+
+  .quick-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .quick-icon.blue  { background: rgba(26,110,247,0.15); }
+  .quick-icon.green { background: rgba(16,185,129,0.15); }
+  .quick-icon.yellow{ background: rgba(245,158,11,0.15); }
+  .quick-icon.red   { background: rgba(239,68,68,0.15); }
+
+  .quick-card-title {
+    font-size: 15px; font-weight: 700; color: var(--white);
+  }
+  .quick-card-desc {
+    font-size: 13px; color: var(--muted);
+  }
+  .quick-card-arrow {
+    margin-top: auto;
+    font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 4px;
+    transition: gap 0.2s;
+  }
+  .quick-card:hover .quick-card-arrow { gap: 8px; color: var(--blue-light); }
+</style>
+
+<!-- Hero -->
+<div class="hero-section">
+  <div class="hero-tag">🛡️ Compliance Management Platform</div>
+  <h1 class="hero-title">
+    Company<br>
+    <span class="accent">Compliance</span><br>
+    Network
+  </h1>
+  <p class="hero-desc">
+    Monitor companies, documents and expiry alerts from one centralized platform.
+  </p>
+  <div class="hero-actions">
+    <a href="/companies" class="btn btn-primary">🏢 View Companies →</a>
+    <a href="/documents" class="btn btn-outline">📄 View Documents →</a>
+  </div>
+</div>
+
+<!-- Quick Access -->
+<div class="page-header">
+  <div>
+    <h1>Quick Access</h1>
+    <p>Navigate to the most important sections</p>
+  </div>
 </div>
 
 <div class="quick-grid">
+  <a href="/dashboard" class="quick-card blue">
+    <div class="quick-icon blue">📊</div>
+    <div>
+      <div class="quick-card-title">Dashboard</div>
+      <div class="quick-card-desc">Overview of all compliance metrics and expiry stats</div>
+    </div>
+    <div class="quick-card-arrow">Go to Dashboard →</div>
+  </a>
 
-    <a href="/companies" class="quick-card">
-        <i class="ti ti-building"></i>
-        <h3>Companies</h3>
-        <p>Manage company records</p>
-    </a>
+  <a href="/companies" class="quick-card green">
+    <div class="quick-icon green">🏢</div>
+    <div>
+      <div class="quick-card-title">Companies</div>
+      <div class="quick-card-desc">Browse and manage all registered companies</div>
+    </div>
+    <div class="quick-card-arrow">View Companies →</div>
+  </a>
 
-    <a href="/documents" class="quick-card">
-        <i class="ti ti-file-description"></i>
-        <h3>Documents</h3>
-        <p>Track all documents</p>
-    </a>
+  <a href="/documents" class="quick-card yellow">
+    <div class="quick-icon yellow">📄</div>
+    <div>
+      <div class="quick-card-title">Documents</div>
+      <div class="quick-card-desc">Track document statuses, expiry dates and renewals</div>
+    </div>
+    <div class="quick-card-arrow">View Documents →</div>
+  </a>
 
-    <a href="/alerts" class="quick-card">
-        <i class="ti ti-bell"></i>
-        <h3>Alerts</h3>
-        <p>View renewal alerts</p>
-    </a>
-
-    <a href="/audit-logs" class="quick-card">
-        <i class="ti ti-history"></i>
-        <h3>Audit Logs</h3>
-        <p>Monitor activity</p>
-    </a>
-
-    <a href="/dashboard" class="quick-card">
-    <i class="ti ti-layout-dashboard"></i>
-    <h3>Dashboard</h3>
-    <p>View system overview</p>
-</a>
-
-<a href="/logout" class="quick-card">
-    <i class="ti ti-logout"></i>
-    <h3>Logout</h3>
-    <p>Sign out securely</p>
-</a>
-
+  <a href="/alerts" class="quick-card red">
+    <div class="quick-icon red">🔔</div>
+    <div>
+      <div class="quick-card-title">Alerts</div>
+      <div class="quick-card-desc">See all pending renewal alerts sorted by urgency</div>
+    </div>
+    <div class="quick-card-arrow">View Alerts →</div>
+  </a>
 </div>
-
-
 {% endblock %}
-

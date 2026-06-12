@@ -1,56 +1,47 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% block title %}Audit Logs — ComplianceNet{% endblock %}
+{% block topbar_title %}Audit Logs{% endblock %}
 
 {% block content %}
-
-<div class="container-fluid">
-
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="fw-bold">Audit Logs</h2>
-            <p class="text-muted">
-                View all system activities and user actions.
-            </p>
-        </div>
-    </div>
-
-    <div class="card shadow border-0">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">
-                <i class="fas fa-history"></i> Audit Log Records
-            </h5>
-        </div>
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table table-hover table-striped align-middle">
-
-                    <thead class="table-dark">
-                        <tr>
-                            <th>User ID</th>
-                            <th>Action</th>
-                            <th>Timestamp</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for log in logs %}
-                        <tr>
-                            <td>{{ log.user_id }}</td>
-                            <td>{{ log.action }}</td>
-                            <td>{{ log.timestamp }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-    </div>
-
+<div class="page-header">
+  <div>
+    <h1>Audit Logs</h1>
+    <p>Complete record of all system activity</p>
+  </div>
 </div>
 
+{% if logs %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>User ID</th>
+        <th>Action</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td style="color:var(--muted)">{{ log['id'] }}</td>
+        <td>
+          <span style="background:var(--blue-glow);border:1px solid rgba(26,110,247,0.3);color:var(--blue-light);padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600">
+            User #{{ log['user_id'] }}
+          </span>
+        </td>
+        <td style="color:var(--text)">{{ log['action'] }}</td>
+        <td style="color:var(--muted);font-size:13px">{{ log['timestamp'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card" style="text-align:center;padding:48px">
+  <div style="font-size:48px;margin-bottom:12px">📋</div>
+  <div style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">No Logs Yet</div>
+  <div style="color:var(--muted)">System actions will appear here once users start interacting.</div>
+</div>
+{% endif %}
 {% endblock %}

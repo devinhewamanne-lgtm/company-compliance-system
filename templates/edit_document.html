@@ -1,43 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Document</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Edit Document — ComplianceNet{% endblock %}
+{% block topbar_title %}Edit Document{% endblock %}
 
-<h1>Edit Document</h1>
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Edit Document</h1>
+    <p>Update document details and renewal settings</p>
+  </div>
+  <a href="/documents" class="btn btn-outline btn-sm">← Back to Documents</a>
+</div>
 
-<form method="POST">
+<div class="card" style="max-width:760px">
+  <div style="margin-bottom:24px">
+    <div class="card-title">Document Details</div>
+    <div class="card-sub">Modify the information below and save your changes</div>
+  </div>
 
-    <label>Document Name</label><br>
-    <input type="text"
-           name="document_name"
-           value="{{ document['document_name'] }}">
-    <br><br>
+  <form method="POST">
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label class="form-label">Document Name *</label>
+        <input type="text" name="document_name" class="form-control" value="{{ document.document_name }}" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Issue Date</label>
+        <input type="date" name="issue_date" class="form-control" value="{{ document.issue_date }}"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Expiry Date *</label>
+        <input type="date" name="expiry_date" class="form-control" value="{{ document.expiry_date }}" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reminder Days</label>
+        <select name="reminder_days" class="form-control">
+          <option value="7" {% if document.reminder_days == 7 %}selected{% endif %}>7 days before expiry</option>
+          <option value="15" {% if document.reminder_days == 15 %}selected{% endif %}>15 days before expiry</option>
+          <option value="30" {% if document.reminder_days == 30 %}selected{% endif %}>30 days before expiry</option>
+        </select>
+      </div>
+    </div>
 
-    <label>Issue Date</label><br>
-    <input type="date"
-           name="issue_date"
-           value="{{ document['issue_date'] }}">
-    <br><br>
+    <hr class="section-divider"/>
 
-    <label>Expiry Date</label><br>
-    <input type="date"
-           name="expiry_date"
-           value="{{ document['expiry_date'] }}">
-    <br><br>
-
-    <label>Reminder Days</label><br>
-    <input type="number"
-           name="reminder_days"
-           value="{{ document['reminder_days'] }}">
-    <br><br>
-
-    <button type="submit">
-        Update Document
-    </button>
-
-</form>
-
-</body>
-</html>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <a href="/documents" class="btn btn-outline">Cancel</a>
+      <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

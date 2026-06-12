@@ -1,31 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Expiring Documents</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Expiring Documents — ComplianceNet{% endblock %}
+{% block topbar_title %}Expiring Documents{% endblock %}
 
-<h1>Expiring Documents</h1>
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Expiring Documents</h1>
+    <p>Documents with upcoming expiry dates</p>
+  </div>
+</div>
 
-<table border="1">
-
-<tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Expiry Date</th>
-</tr>
-
-{% for doc in documents %}
-
-<tr>
-    <td>{{ doc['document_name'] }}</td>
-    <td>{{ doc['document_type'] }}</td>
-    <td>{{ doc['expiry_date'] }}</td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-</body>
-</html>
+{% if documents %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Document Name</th>
+        <th>Company ID</th>
+        <th>Issue Date</th>
+        <th>Expiry Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for doc in documents %}
+      <tr>
+        <td style="color:var(--muted)">{{ doc['id'] }}</td>
+        <td><span class="company-name">{{ doc['document_name'] }}</span></td>
+        <td>{{ doc['company_id'] }}</td>
+        <td>{{ doc['issue_date'] or '—' }}</td>
+        <td style="color:var(--yellow);font-weight:600">{{ doc['expiry_date'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card" style="text-align:center;padding:48px">
+  <div style="font-size:48px;margin-bottom:12px">✅</div>
+  <div style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">No Expiring Documents</div>
+  <div style="color:var(--muted)">All documents are valid and up to date.</div>
+</div>
+{% endif %}
+{% endblock %}

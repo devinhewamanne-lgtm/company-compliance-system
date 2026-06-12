@@ -1,146 +1,99 @@
-{% extends "base.html" %}
-
-{% block title %}Dashboard{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Dashboard — ComplianceNet{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
 
 {% block content %}
-
-<div class="row mb-4">
-
-    <div class="col-md-3">
-        <div class="card bg-primary text-white shadow">
-            <div class="card-body">
-                <h5>Total Companies</h5>
-                <h2>{{ companies|length }}</h2>
-            </div>
-        </div>
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon blue">🏢</div>
+    <div>
+      <div class="stat-value">{{ total_companies }}</div>
+      <div class="stat-label">Total Companies</div>
     </div>
-
-    <div class="col-md-3">
-        <div class="card bg-success text-white shadow">
-            <div class="card-body">
-                <h5>Active</h5>
-                <h2>{{ active_count }}</h2>
-            </div>
-        </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green">📄</div>
+    <div>
+      <div class="stat-value">{{ total_documents }}</div>
+      <div class="stat-label">Total Documents</div>
     </div>
-
-    <div class="col-md-3">
-        <div class="card bg-warning text-dark shadow">
-            <div class="card-body">
-                <h5>Expiring Soon</h5>
-                <h2>{{ expiring_count }}</h2>
-            </div>
-        </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon yellow">⏰</div>
+    <div>
+      <div class="stat-value">{{ expiring_count }}</div>
+      <div class="stat-label">Expiring in 30 Days</div>
     </div>
-
-    <div class="col-md-3">
-        <div class="card bg-danger text-white shadow">
-            <div class="card-body">
-                <h5>Expired</h5>
-                <h2>{{ expired_count }}</h2>
-            </div>
-        </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon red">❌</div>
+    <div>
+      <div class="stat-value">{{ expired_count }}</div>
+      <div class="stat-label">Expired Documents</div>
     </div>
-
+  </div>
 </div>
 
-<div class="p-4 mb-4 rounded text-white"
-     style="background: linear-gradient(135deg,#667eea,#764ba2);">
-    <h2> Compliance Dashboard</h2>
-    <p class="mb-0">Monitor company registrations and renewals</p>
-</div>
-
-<table border="1" cellpadding="10">
-<tr>
-    <th>Total Companies</th>
-    <th>Total Documents</th>
-    <th>Expiring Soon</th>
-    <th>Expired</th>
-</tr>
-
-<tr>
-    <td>{{ total_companies }}</td>
-    <td>{{ total_documents }}</td>
-    <td>{{ expiring_count }}</td>
-    <td>{{ expired_count }}</td>
-</tr>
-</table>
-
-<br>
-
-<div class="row mt-4">
-
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Total Companies</h5>
-<h2>{{ total_companies }}</h2>
-</div>
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Total Documents</h5>
-<h2>{{ total_documents }}</h2>
-</div>
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Expiring Soon</h5>
-<h2>{{ expiring_count }}</h2>
-</div>
-</div>
-</div>
-
-<div class="col-md-3">
-<div class="card text-center">
-<div class="card-body">
-<h5>Expired</h5>
-<h2>{{ expired_count }}</h2>
-</div>
-</div>
-</div>
-
+<!-- Alert filter tabs -->
+<div class="page-header">
+  <div>
+    <h1>Renewal Alerts</h1>
+    <p>Documents requiring attention in the next 30 days</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a href="/alerts/7"  class="btn btn-danger btn-sm">🔴 7 Days</a>
+    <a href="/alerts/15" class="btn btn-sm btn-outline" style="border-color:rgba(245,158,11,0.4);color:var(--yellow)">🟡 15 Days</a>
+    <a href="/alerts/30" class="btn btn-sm btn-outline" style="border-color:rgba(26,110,247,0.4);color:var(--blue-light)">🟠 30 Days</a>
+  </div>
 </div>
 
 {% if alerts %}
-
-<div style="
-background:#fff3cd;
-padding:15px;
-margin-bottom:20px;
-border:1px solid #ffeeba;
-border-radius:5px;
-">
-
-<h3>Renewal Alerts</h3>
-
-<ul>
-
-{% for alert in alerts %}
-
-<li>
-<strong>{{ alert.company_name }}</strong>
--
-{{ alert.document_name }}
-expires in
-<strong>{{ alert.days_left }}</strong>
-day(s)
-on
-{{ alert.expiry_date }}
-</li>
-
-{% endfor %}
-
-</ul>
-
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Company</th>
+        <th>Document</th>
+        <th>Expiry Date</th>
+        <th>Days Left</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alert in alerts %}
+      <tr>
+        <td><span class="company-name">{{ alert.company_name }}</span></td>
+        <td>{{ alert.document_name }}</td>
+        <td>{{ alert.expiry_date }}</td>
+        <td>
+          {% if alert.days_left < 0 %}
+            <span style="color:var(--red);font-weight:700">{{ alert.days_left|abs }} days ago</span>
+          {% else %}
+            <span style="color:{% if alert.days_left <= 7 %}var(--red){% elif alert.days_left <= 15 %}var(--yellow){% else %}var(--text){% endif %};font-weight:600">{{ alert.days_left }} days</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if alert.days_left < 0 %}
+            <span class="badge badge-expired">Expired</span>
+          {% elif alert.days_left <= 7 %}
+            <span class="badge badge-expired">Critical</span>
+          {% elif alert.days_left <= 15 %}
+            <span class="badge badge-expiring">Warning</span>
+          {% else %}
+            <span class="badge badge-expiring">Expiring Soon</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
-
+{% else %}
+<div class="card" style="text-align:center;padding:48px">
+  <div style="font-size:48px;margin-bottom:12px">✅</div>
+  <div style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">All Clear</div>
+  <div style="color:var(--muted)">No documents are due for renewal in the next 30 days.</div>
+</div>
 {% endif %}
-
 {% endblock %}

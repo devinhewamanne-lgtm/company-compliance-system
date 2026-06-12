@@ -1,341 +1,200 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign in — NGN Global</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+{% extends 'base.html' %}
+{% block title %}Login — ComplianceNet{% endblock %}
 
-    :root {
-      --navy: #0f2d5e;
-      --blue: #1a6bbf;
-      --white: #ffffff;
-      --gray-50: #f8fafc;
-      --gray-100: #f1f4f9;
-      --gray-200: #e2e8f0;
-      --gray-400: #94a3b8;
-      --gray-500: #64748b;
-      --gray-700: #334155;
-      --gray-900: #0f172a;
-      --red: #dc2626;
-      --red-bg: #fef2f2;
-      --red-border: #fecaca;
-    }
+{% block auth_content %}
+<style>
+  .login-page {
+    min-height: 100vh;
+    display: flex;
+    background: var(--navy);
+    overflow: hidden;
+    position: relative;
+  }
+  .login-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 70% 50%, rgba(26,110,247,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 400px at 10% 80%, rgba(0,196,255,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
 
-    html, body { height: 100%; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-    body { display: flex; min-height: 100vh; background: var(--gray-50); }
+  /* Left panel */
+  .login-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 64px 72px;
+    position: relative;
+    background:
+      linear-gradient(100deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.85) 45%, rgba(10,22,40,0.55) 100%),
+      url('{{ url_for('static', filename='images/Dashboard.webp') }}');
+    background-size: cover;
+    background-position: center;
+  }
 
-    /* ── Left panel ─────────────────────── */
-    .left-panel {
-      width: 480px; flex-shrink: 0;
-      background: var(--navy);
-      display: flex; flex-direction: column;
-      justify-content: space-between;
-      padding: 48px 52px;
-      position: relative; overflow: hidden;
-    }
+  .login-hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(26,110,247,0.12);
+    border: 1px solid rgba(26,110,247,0.25);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; color: var(--blue-light);
+    margin-bottom: 32px;
+    width: fit-content;
+  }
 
-    /* Network grid background pattern */
-    .left-panel::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
-      background-size: 32px 32px;
-      z-index: 0;
-    }
-    /* Glowing orb */
-    .left-panel::after {
-      content: '';
-      position: absolute;
-      width: 360px; height: 360px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(96,165,250,0.12) 0%, transparent 70%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 0;
-    }
+  .login-hero-title {
+    font-size: 52px; font-weight: 800;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+  .login-hero-title .accent {
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-    .panel-brand { display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }
-    .brand-mark {
-      width: 46px; height: 46px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      color: #60a5fa; font-size: 22px;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-    .brand-name { color: #fff; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
-    .brand-full { color: rgba(255,255,255,0.45); font-size: 11px; margin-top: 2px; }
-    .brand-loc  {
-      display: flex; align-items: center; gap: 4px;
-      color: rgba(255,255,255,0.35); font-size: 11px; margin-top: 3px;
-    }
-    .brand-loc i { font-size: 12px; }
+  .login-hero-desc {
+    font-size: 16px; color: var(--muted);
+    max-width: 400px; line-height: 1.7;
+    margin-bottom: 40px;
+  }
 
-    .panel-hero { position: relative; z-index: 1; }
-    .panel-heading {
-      font-size: 28px; font-weight: 600; color: #fff;
-      line-height: 1.28; letter-spacing: -0.02em; margin-bottom: 14px;
-    }
-    .panel-heading span { color: #60a5fa; }
-    .panel-desc { font-size: 13.5px; color: rgba(255,255,255,0.45); line-height: 1.75; max-width: 320px; }
+  .feature-list {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .feature-item {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: var(--text);
+  }
+  .feature-dot {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--blue-glow);
+    border: 1px solid rgba(26,110,247,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
 
-    .feature-list { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 13px; }
-    .feature-item { display: flex; align-items: center; gap: 12px; font-size: 13px; color: rgba(255,255,255,0.55); }
-    .feature-icon {
-      width: 34px; height: 34px; flex-shrink: 0;
-      border-radius: 9px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; color: #93c5fd;
-    }
+  /* Right panel — form */
+  .login-right {
+    width: 480px;
+    background: var(--navy-mid);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 56px 48px;
+    position: relative;
+  }
 
-    /* ── Right panel ────────────────────── */
-    .right-panel {
-      flex: 1; display: flex;
-      align-items: center; justify-content: center;
-      padding: 40px 24px;
-    }
-    .login-box { width: 100%; max-width: 400px; }
+  .login-form-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 40px;
+  }
+  .login-form-logo .icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .login-form-logo .text {
+    font-size: 17px; font-weight: 800; color: var(--white);
+  }
+  .login-form-logo .text span {
+    display: block; font-size: 11px; font-weight: 400;
+    color: var(--muted);
+  }
 
-    /* Company header on right side */
-    .company-header {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--gray-200);
-    }
-    .company-icon {
-      width: 44px; height: 44px;
-      background: var(--navy);
-      border-radius: 11px;
-      display: flex; align-items: center; justify-content: center;
-      color: #60a5fa; font-size: 21px;
-      flex-shrink: 0;
-    }
-    .company-name { font-size: 14px; font-weight: 600; color: var(--gray-900); letter-spacing: -0.01em; }
-    .company-addr { font-size: 12px; color: var(--gray-400); margin-top: 2px; display: flex; align-items: center; gap: 4px; }
-    .company-addr i { font-size: 12px; }
+  .login-form-title {
+    font-size: 24px; font-weight: 800; color: var(--white);
+    margin-bottom: 6px;
+  }
+  .login-form-sub {
+    font-size: 14px; color: var(--muted);
+    margin-bottom: 32px;
+  }
 
-    .login-eyebrow {
-      font-size: 12px; font-weight: 600; color: var(--blue);
-      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;
-    }
-    .login-title { font-size: 24px; font-weight: 600; color: var(--gray-900); letter-spacing: -0.02em; margin-bottom: 4px; }
-    .login-sub   { font-size: 13.5px; color: var(--gray-400); margin-bottom: 28px; }
+  .login-divider {
+    border: none; border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
 
-    .error-box {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--red-bg); border: 1px solid var(--red-border);
-      border-radius: 10px; padding: 12px 16px; margin-bottom: 20px;
-      font-size: 13.5px; color: var(--red); font-weight: 500;
-    }
-    .error-box i { font-size: 17px; flex-shrink: 0; }
+  .login-footer-note {
+    font-size: 12px; color: var(--muted);
+    text-align: center; margin-top: 20px;
+  }
+</style>
 
-    .field { margin-bottom: 16px; }
-    .field-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
-    .field-wrap  { position: relative; }
-    .field-icon  {
-      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
-      color: var(--gray-400); font-size: 17px; pointer-events: none; transition: color 0.15s;
-    }
-    .field-input {
-      width: 100%; padding: 11px 14px 11px 40px;
-      border: 1.5px solid var(--gray-200); border-radius: 10px;
-      font-size: 14px; font-family: 'DM Sans', sans-serif;
-      color: var(--gray-900); background: var(--white);
-      outline: none; transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .field-input::placeholder { color: var(--gray-400); }
-    .field-input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 4px rgba(26,107,191,0.1);
-    }
-    .field-wrap:focus-within .field-icon { color: var(--blue); }
-
-    .toggle-pw {
-      position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
-      color: var(--gray-400); font-size: 17px; cursor: pointer;
-      border: none; background: none; padding: 2px; transition: color 0.15s;
-    }
-    .toggle-pw:hover { color: var(--gray-700); }
-
-    .submit-btn {
-      width: 100%; padding: 12px;
-      background: var(--navy); color: #fff;
-      border: none; border-radius: 10px;
-      font-size: 14.5px; font-weight: 600;
-      font-family: 'DM Sans', sans-serif; cursor: pointer;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      margin-top: 8px;
-    }
-    .submit-btn:hover { background: #1a3d6e; box-shadow: 0 4px 16px rgba(15,45,94,0.3); }
-    .submit-btn:active { transform: scale(0.99); }
-    .submit-btn i { font-size: 17px; }
-
-    .divider {
-      display: flex; align-items: center; gap: 12px;
-      margin: 22px 0; color: var(--gray-400); font-size: 12px;
-    }
-    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
-
-    .hint-box {
-      background: var(--gray-100); border-radius: 10px;
-      padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start;
-    }
-    .hint-box i { color: var(--blue); font-size: 17px; flex-shrink: 0; margin-top: 1px; }
-    .hint-text  { font-size: 12.5px; color: var(--gray-500); line-height: 1.6; }
-    .hint-creds { font-size: 12px; color: var(--gray-700); font-weight: 600; margin-top: 4px; }
-
-    .login-footer { margin-top: 24px; text-align: center; font-size: 11.5px; color: var(--gray-400); }
-
-    @media (max-width: 800px) {
-      .left-panel { display: none; }
-      .right-panel { padding: 32px 20px; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- ── Left panel ─────────────────────── -->
-  <div class="left-panel">
-    <div class="panel-brand">
-      <div class="brand-mark"><i class="ti ti-network"></i></div>
-      <div>
-        <div class="brand-name">NGN Global</div>
-        <div class="brand-full">NGN Global Private Limited</div>
-        <div class="brand-loc">
-          
-        </div>
-      </div>
-    </div>
-
-    <div class="panel-hero">
-      <h2 class="panel-heading">
-        Connected networks.<br>
-        <span>Smarter compliance</span><br>
-        management.
-      </h2>
-      <p class="panel-desc">
-        NGN Global's internal compliance platform — track your business licenses, contracts, and critical renewal deadlines from one secure dashboard.
-      </p>
-    </div>
-
+<div class="login-page">
+  <!-- Left Hero -->
+  <div class="login-left">
+    <div class="login-hero-badge">🛡️ Compliance Management Platform</div>
+    <h1 class="login-hero-title">
+      Company<br>
+      <span class="accent">Compliance</span><br>
+      Network
+    </h1>
+    <p class="login-hero-desc">
+      Monitor companies, documents and expiry alerts from one centralized platform.
+    </p>
     <div class="feature-list">
       <div class="feature-item">
-        <div class="feature-icon"><i class="ti ti-topology-star-3"></i></div>
-        Network infrastructure tracking
+        <div class="feature-dot">📊</div>
+        Real-time dashboard & expiry analytics
       </div>
       <div class="feature-item">
-        <div class="feature-icon"><i class="ti ti-bell-ringing"></i></div>
-        Automated renewal reminders
+        <div class="feature-dot">🔔</div>
+        Automated 7, 15 &amp; 30-day renewal alerts
       </div>
       <div class="feature-item">
-        <div class="feature-icon"><i class="ti ti-shield-lock"></i></div>
-        Secure role-based access
+        <div class="feature-dot">🏢</div>
+        Multi-company document tracking
       </div>
       <div class="feature-item">
-        <div class="feature-icon"><i class="ti ti-file-analytics"></i></div>
-        Document expiry tracking
+        <div class="feature-dot">📧</div>
+        Email reminders sent automatically
       </div>
+    </div>
+
+    <div style="margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;font-weight:600">
+      A Product of NGN Global Private Limited
     </div>
   </div>
 
-  <!-- ── Right panel ─────────────────────── -->
-  <div class="right-panel">
-    <div class="login-box">
-
-      <!-- Company badge -->
-      <div class="company-header">
-        <div class="company-icon"><i class="ti ti-network"></i></div>
-        <div>
-          <div class="company-name">NGN Global Private Limited</div>
-          <div class="company-addr">
-            <i class="ti ti-map-pin"></i> Castle Lane, Colombo 4
-          </div>
-        </div>
+  <!-- Right Form -->
+  <div class="login-right">
+    <div class="login-form-logo">
+      <div class="icon">🛡️</div>
+      <div class="text">
+        ComplianceNet
+        <span>Secure Login</span>
       </div>
-
-      <div class="login-eyebrow">Secure portal</div>
-      <h1 class="login-title">Sign in to your account</h1>
-      <p class="login-sub">Enter your credentials to access the dashboard</p>
-
-      {% if error %}
-      <div class="error-box">
-        <i class="ti ti-alert-circle"></i> {{ error }}
-      </div>
-      {% endif %}
-
-      <form method="POST" action="/login">
-
-        <div class="field">
-          <label class="field-label" for="username">Username</label>
-          <div class="field-wrap">
-            <input class="field-input" type="text" id="username"
-                   name="username" placeholder="Enter your username"
-                   autocomplete="username" required>
-            <i class="ti ti-user field-icon"></i>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="field-label" for="password">Password</label>
-          <div class="field-wrap">
-            <input class="field-input" type="password" id="password"
-                   name="password" placeholder="Enter your password"
-                   autocomplete="current-password" required>
-            <i class="ti ti-lock field-icon"></i>
-            <button type="button" class="toggle-pw" onclick="togglePassword()" title="Show/hide password">
-              <i class="ti ti-eye" id="pw-eye"></i>
-            </button>
-          </div>
-        </div>
-
-        <button class="submit-btn" type="submit">
-          <i class="ti ti-login"></i> Sign in
-        </button>
-
-      </form>
-
-      <div class="divider">default credentials</div>
-
-      <div class="hint-box">
-        <i class="ti ti-info-circle"></i>
-        <div>
-          <div class="hint-text">Use the default admin account to get started:</div>
-          <div class="hint-creds">Username: admin &nbsp;·&nbsp; Password: admin123</div>
-        </div>
-      </div>
-
-      <div class="login-footer">
-        © 2026 NGN Global Private Limited · Castle Lane, Colombo 4
-      </div>
-
     </div>
+
+    <h2 class="login-form-title">Welcome back</h2>
+    <p class="login-form-sub">Sign in to your account to continue</p>
+
+    <form method="POST" action="/login">
+      <div class="form-group" style="margin-bottom:18px">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" placeholder="Enter your username" required autocomplete="username"/>
+      </div>
+      <div class="form-group" style="margin-bottom:28px">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password"/>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:13px; font-size:15px;">
+        Sign In →
+      </button>
+    </form>
+
+    <hr class="login-divider"/>
+   <p class="login-footer-note">© NGN Global Private Limited · Secured by ComplianceNet v2.0</p>
   </div>
-
-  <script>
-    function togglePassword() {
-      const input = document.getElementById('password');
-      const icon  = document.getElementById('pw-eye');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'ti ti-eye-off';
-      } else {
-        input.type = 'password';
-        icon.className = 'ti ti-eye';
-      }
-    }
-  </script>
-
-</body>
-</html>
-
-
+</div>
+{% endblock %}

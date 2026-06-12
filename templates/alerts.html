@@ -1,63 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Renewal Alerts</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}{{ title }} — ComplianceNet{% endblock %}
+{% block topbar_title %}{{ title }}{% endblock %}
 
-<h1>Renewal Alerts</h1>
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>{{ title }}</h1>
+    <p>Documents expiring within the selected time window</p>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a href="/alerts/7"  class="btn btn-danger btn-sm">🔴 7 Days</a>
+    <a href="/alerts/15" class="btn btn-sm" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--yellow)">🟡 15 Days</a>
+    <a href="/alerts/30" class="btn btn-outline btn-sm">🟠 30 Days</a>
+  </div>
+</div>
 
-<table border="1">
-
-<tr>
-    <th>Company</th>
-    <th>Document</th>
-    <th>Expiry Date</th>
-    <th>Days Left</th>
-</tr>
-
-{% for alert in alerts %}
-<tr>
-    <td>{{ alert.company }}</td>
-    <td>{{ alert.document }}</td>
-    <td>{{ alert.expiry }}</td>
-    <td>{{ alert.days_left }}</td>
-</tr>
-{% endfor %}
-
-</table>
-
-</body>
-</html> 
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ title }}</title>
-</head>
-<body>
-
-<h1>{{ title }}</h1>
-
-<table border="1">
-
-<tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Expiry Date</th>
-</tr>
-
-{% for doc in documents %}
-
-<tr>
-    <td>{{ doc['document_name'] }}</td>
-    <td>{{ doc['document_type'] }}</td>
-    <td>{{ doc['expiry_date'] }}</td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-</body>
-</html>
+{% if documents %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Document Name</th>
+        <th>Company ID</th>
+        <th>Issue Date</th>
+        <th>Expiry Date</th>
+        <th>Reminder Days</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for doc in documents %}
+      <tr>
+        <td style="color:var(--muted)">{{ doc['id'] }}</td>
+        <td><span class="company-name">{{ doc['document_name'] }}</span></td>
+        <td>{{ doc['company_id'] }}</td>
+        <td>{{ doc['issue_date'] or '—' }}</td>
+        <td style="color:var(--red);font-weight:600">{{ doc['expiry_date'] }}</td>
+        <td>{{ doc['reminder_days'] }}d</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card" style="text-align:center;padding:48px">
+  <div style="font-size:48px;margin-bottom:12px">✅</div>
+  <div style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">No Documents in This Window</div>
+  <div style="color:var(--muted)">No documents are expiring in the next {{ title.split(' ')[0] }} days.</div>
+</div>
+{% endif %}
+{% endblock %}

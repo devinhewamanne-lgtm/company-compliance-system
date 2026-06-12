@@ -1,256 +1,72 @@
-{% extends "base.html" %}
-
-{% block title %}Company List{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Companies — ComplianceNet{% endblock %}
+{% block topbar_title %}Companies{% endblock %}
 
 {% block content %}
-
-<style>
-.company-page{
-    padding:20px;
-}
-
-.page-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
-    flex-wrap:wrap;
-}
-
-.page-header h2{
-    font-size:32px;
-    color:#1e293b;
-    margin:0;
-}
-
-.header-buttons{
-    display:flex;
-    gap:10px;
-}
-
-.btn{
-    text-decoration:none;
-    color:white;
-    padding:12px 18px;
-    border-radius:12px;
-    font-weight:600;
-    transition:0.3s;
-}
-
-.btn:hover{
-    transform:translateY(-3px);
-}
-
-.add-btn{
-    background:linear-gradient(135deg,#2563eb,#7c3aed);
-}
-
-.excel-btn{
-    background:#10b981;
-}
-
-.pdf-btn{
-    background:#ef4444;
-}
-
-.stats-card{
-    width:250px;
-    background:white;
-    padding:25px;
-    border-radius:18px;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    margin-bottom:20px;
-}
-
-.stats-card h3{
-    font-size:40px;
-    color:#2563eb;
-    margin:0;
-}
-
-.stats-card p{
-    color:#64748b;
-    margin-top:8px;
-}
-
-.search-box{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
-}
-
-.search-box input{
-    flex:1;
-    padding:12px;
-    border:1px solid #ddd;
-    border-radius:12px;
-}
-
-.search-box button{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:12px;
-    cursor:pointer;
-}
-
-.search-box button:hover{
-    background:#1d4ed8;
-}
-
-.table-container{
-    background:white;
-    border-radius:20px;
-    overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-}
-
-.company-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.company-table th{
-    background:linear-gradient(135deg,#2563eb,#7c3aed);
-    color:white;
-    padding:16px;
-    text-align:left;
-}
-
-.company-table td{
-    padding:14px;
-    border-bottom:1px solid #eee;
-}
-
-.company-table tr:hover{
-    background:#f8fafc;
-}
-
-.action-btn{
-    text-decoration:none;
-    color:white;
-    padding:8px 12px;
-    border-radius:8px;
-    margin-right:5px;
-    font-size:14px;
-}
-
-.edit-btn{
-    background:#10b981;
-}
-
-.delete-btn{
-    background:#ef4444;
-}
-
-.edit-btn:hover,
-.delete-btn:hover{
-    opacity:0.9;
-}
-</style>
-
-<div class="company-page">
-
-    <div class="page-header">
-
-        <h2>🏢 Company Management</h2>
-
-        <div class="header-buttons">
-
-            <a href="/add-company" class="btn add-btn">
-                + Add Company
-            </a>
-
-            <a href="/export_companies_excel" class="btn excel-btn">
-                📊 Excel
-            </a>
-
-            <a href="/export_companies_pdf" class="btn pdf-btn">
-                📄 PDF
-            </a>
-
-        </div>
-
-    </div>
-
-    <div class="stats-card">
-        <h3>{{ companies|length }}</h3>
-        <p>Total Companies</p>
-    </div>
-
-    <form method="GET" class="search-box">
-
-        <input
-            type="text"
-            name="search"
-            placeholder="🔍 Search company..."
-        >
-
-        <button type="submit">
-            Search
-        </button>
-
+<div class="page-header">
+  <div>
+    <h1>Companies</h1>
+    <p>All registered companies in the system</p>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <form method="GET" action="/companies" style="display:flex;gap:8px">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" name="search" class="form-control" placeholder="Search companies…" value="{{ request.args.get('search','') }}" style="width:260px"/>
+      </div>
+      <button type="submit" class="btn btn-outline btn-sm">Search</button>
     </form>
-
-    <div class="table-container">
-
-        <table class="company-table">
-
-            <thead>
-
-                <tr>
-                    <th>ID</th>
-                    <th>Company Name</th>
-                    <th>Registration Number</th>
-                    <th>Contact Person</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-            {% for company in companies %}
-
-                <tr>
-
-                    <td>{{ company[0] }}</td>
-                    <td>{{ company[1] }}</td>
-                    <td>{{ company[2] }}</td>
-                    <td>{{ company[4] }}</td>
-                    <td>{{ company[5] }}</td>
-                    <td>{{ company[6] }}</td>
-
-                    <td>
-
-                        <a
-                            href="/edit-company/{{ company[0] }}"
-                            class="action-btn edit-btn">
-                            Edit
-                        </a>
-
-                        <a
-                            href="/delete-company/{{ company[0] }}"
-                            class="action-btn delete-btn"
-                            onclick="return confirm('Delete this company?')">
-                            Delete
-                        </a>
-
-                    </td>
-
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
+    <a href="/add-company" class="btn btn-primary btn-sm">➕ Add Company</a>
+    <a href="/export_companies_csv" class="btn btn-outline btn-sm">⬇ CSV</a>
+    <a href="/export_companies_excel" class="btn btn-outline btn-sm">⬇ Excel</a>
+    <a href="/export_companies_pdf" class="btn btn-outline btn-sm">⬇ PDF</a>
+  </div>
 </div>
 
+{% if companies %}
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Company Name</th>
+        <th>Registration No.</th>
+        <th>Contact Person</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for company in companies %}
+      <tr>
+        <td style="color:var(--muted)">{{ company[0] }}</td>
+        <td><span class="company-name">{{ company[1] }}</span></td>
+        <td>{{ company[2] }}</td>
+        <td>{{ company[4] }}</td>
+        <td>{{ company[5] }}</td>
+        <td>{{ company[6] }}</td>
+        <td>
+          <div style="display:flex;gap:6px">
+            {% if session.get('role') == 'admin' %}
+            <a href="/edit-company/{{ company[0] }}" class="btn btn-outline btn-sm">✏️ Edit</a>
+            <a href="/delete-company/{{ company[0] }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this company?')">🗑 Delete</a>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card" style="text-align:center;padding:48px">
+  <div style="font-size:48px;margin-bottom:12px">🏢</div>
+  <div style="font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px">No Companies Found</div>
+  <div style="color:var(--muted);margin-bottom:20px">
+    {% if request.args.get('search') %}No results for "{{ request.args.get('search') }}"{% else %}Get started by adding your first company.{% endif %}
+  </div>
+  <a href="/add-company" class="btn btn-primary">➕ Add Company</a>
+</div>
+{% endif %}
 {% endblock %}
