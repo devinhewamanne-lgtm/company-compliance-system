@@ -32,8 +32,8 @@ from reportlab.lib import colors
 
 
 
-EMAIL_ADDRESS = "companyreminder@gmail.com"
-EMAIL_PASSWORD = "rvsm xdnz kfgb fxzx"
+EMAIL_ADDRESS = "devinhewamanne@gmail.com"
+EMAIL_PASSWORD = "raft iuyp ldgs pmit"
 
 def send_email(recipient, subject, body):
 
@@ -53,6 +53,8 @@ def send_email(recipient, subject, body):
 
 
 app = Flask(__name__)
+
+app.config['DEBUG'] = True
 
 def log_action(user_id, action):
 
@@ -216,6 +218,53 @@ def get_renewal_alerts():
                     'days_left': days_left
                 })
 
+    return alerts
+
+def get_renewal_alerts():
+ 
+    conn = sqlite3.connect('company.db')
+    conn.row_factory = sqlite3.Row
+ 
+    documents = conn.execute("""
+        SELECT
+            documents.*,
+            companies.company_name
+        FROM documents
+        LEFT JOIN companies
+        ON documents.company_id = companies.id
+    """).fetchall()
+ 
+    conn.close()
+ 
+    alerts = []
+    today = date.today()
+ 
+    for doc in documents:
+ 
+        if not doc['expiry_date']:
+            continue
+ 
+        try:
+            expiry = datetime.strptime(
+                doc['expiry_date'], '%Y-%m-%d'
+            ).date()
+        except (ValueError, TypeError):
+            continue
+ 
+        days_left = (expiry - today).days
+ 
+        # Show all documents expiring within 30 days (including already expired)
+        if days_left <= 30:
+            alerts.append({
+                'company_name': doc['company_name'] or '—',
+                'document_name': doc['document_name'],
+                'expiry_date': doc['expiry_date'],
+                'days_left': days_left
+            })
+ 
+    # Sort: most urgent first
+    alerts.sort(key=lambda x: x['days_left'])
+ 
     return alerts
 
 
@@ -543,14 +592,27 @@ def documents():
             status = "Active"
             priority = 3
 
+       # In app.py, find the documents() route (around line 502)
+# Replace ONLY the processed_documents.append({ ... }) block
+# (lines 546-554) with this:
+
         processed_documents.append({
-            'id': doc['id'],
-            'company_name': doc['company_name'],
-            'document_name': doc['document_name'],
-            'expiry_date': doc['expiry_date'],
-            'status': status,
-            'days_left': days_left,
-            'priority': priority
+            'id':             doc['id'],
+            'company_name':   doc['company_name'],
+            'document_name':  doc['document_name'],
+            'issue_date':     doc['issue_date'],
+            'expiry_date':    doc['expiry_date'],
+            'reminder_days':  doc['reminder_days'],
+            'status':         status,
+            'days_left':      days_left,
+            'priority':       priority,
+            'firewall_vendor': doc['firewall_vendor'],
+            'firewall_model':  doc['firewall_model'],
+            'serial_number':   doc['serial_number'],
+            'license_type':    doc['license_type'],
+            'renewal_cost':    doc['renewal_cost'],
+            'renewal_period':  doc['renewal_period'],
+            'support_level':   doc['support_level'],
         })
 
     processed_documents.sort(
@@ -565,6 +627,8 @@ def documents():
         documents=processed_documents
     )
 
+# Replace your existing edit_document route in app.py with this:
+
 @app.route('/edit-document/<int:id>', methods=['GET', 'POST'])
 def edit_document(id):
 
@@ -575,49 +639,61 @@ def edit_document(id):
     conn.row_factory = sqlite3.Row
 
     document = conn.execute(
-        "SELECT * FROM documents WHERE id=?",
-        (id,)
+        "SELECT * FROM documents WHERE id=?", (id,)
     ).fetchone()
 
     if request.method == 'POST':
 
-        document_name = request.form['document_name']
-        issue_date = request.form['issue_date']
-        expiry_date = request.form['expiry_date']
-        reminder_days = request.form['reminder_days']
+        document_name   = request.form['document_name']
+        issue_date      = request.form['issue_date']
+        expiry_date     = request.form['expiry_date']
+        reminder_days   = request.form['reminder_days']
+        status          = request.form.get('status', 'Active')
+        firewall_vendor = request.form.get('firewall_vendor', '')
+        firewall_model  = request.form.get('firewall_model', '')
+        serial_number   = request.form.get('serial_number', '')
+        license_type    = request.form.get('license_type', '')
+        renewal_cost    = request.form.get('renewal_cost', '')
+        renewal_period  = request.form.get('renewal_period', '')
+        support_level   = request.form.get('support_level', '')
 
         conn.execute("""
             UPDATE documents
             SET document_name=?,
                 issue_date=?,
                 expiry_date=?,
-                reminder_days=?
+                reminder_days=?,
+                status=?,
+                firewall_vendor=?,
+                firewall_model=?,
+                serial_number=?,
+                license_type=?,
+                renewal_cost=?,
+                renewal_period=?,
+                support_level=?
             WHERE id=?
-        """,
-        (
-            document_name,
-            issue_date,
-            expiry_date,
-            reminder_days,
-            id
+        """, (
+            document_name, issue_date, expiry_date,
+            reminder_days, status, firewall_vendor,
+            firewall_model, serial_number, license_type,
+            renewal_cost, renewal_period, support_level, id
         ))
 
         conn.commit()
 
         log_action(
-       session['user_id'],
-        f"Edited document: {document_name}"
+            session['user_id'],
+            f"Edited document: {document_name}"
         )
+
         conn.close()
 
         return redirect('/documents')
 
     conn.close()
 
-    return render_template(
-        'edit_document.html',
-        document=document
-    )
+    return render_template('edit_document.html', document=document)
+
 
 @app.route('/delete-document/<int:id>')
 def delete_document(id):
@@ -663,8 +739,16 @@ def view_document(id):
 
 def send_renewal_reminders():
     documents = check_expiring_documents()
+    results = []
 
     for doc in documents:
+
+        recipient = doc['email']
+
+        if not recipient:
+            results.append(f"SKIPPED (no email): {doc['document_name']}")
+            continue
+
         subject = (
             f"Renewal Reminder - "
             f"{doc['document_name']}"
@@ -683,111 +767,154 @@ Expiry Date:
 Please renew before expiry.
 """
 
-        send_email(
-            doc['email'],
-            subject,
-            body
-        )
+        try:
+            print("Sending to:", recipient)
+            send_email(recipient, subject, body)
+            results.append(f"SENT to {recipient}: {doc['document_name']}")
+        except Exception as e:
+            results.append(f"FAILED to {recipient}: {doc['document_name']} -> {e}")
+
+    return results
 
 
 @app.route('/test-email')
 def test_email():
 
-    send_renewal_reminders()
+    results = send_renewal_reminders()
 
-    return "Emails Sent"
+    if not results:
+        return "No documents expiring within 30 days. Nothing to send."
 
+    return "<br>".join(results)
+
+@app.route('/test-email-direct')
+def test_email_direct():
+
+    try:
+        send_email(
+            "your_other_email@gmail.com",  # recipient
+            "Test Email",
+            "This is a test from Flask"
+        )
+
+        return "Email sent successfully!"
+
+    except Exception as e:
+        return f"Error: {e}"
 
 
 # Add Document
+# Replace your existing add_document route in app.py with this:
+
+# Replace your existing add_document route in app.py with this:
+
 @app.route('/add-document', methods=['GET', 'POST'])
-@login_required
 def add_document():
 
     if request.method == 'POST':
 
-        company_id = request.form['company_id']
-        document_name = request.form['document_name']
-        issue_date = request.form['issue_date']
-        expiry_date = request.form['expiry_date']
-        reminder_days = request.form['reminder_days']
+        company_id     = request.form['company_id']
+        document_name  = request.form['document_name']
+        issue_date     = request.form['issue_date']
+        expiry_date    = request.form['expiry_date']
+        reminder_days  = request.form['reminder_days']
+        status         = request.form.get('status', 'Active')
+        firewall_vendor = request.form.get('firewall_vendor', '')
+        firewall_model  = request.form.get('firewall_model', '')
+        serial_number   = request.form.get('serial_number', '')
+        license_type    = request.form.get('license_type', '')
+        renewal_cost    = request.form.get('renewal_cost', '')
+        renewal_period  = request.form.get('renewal_period', '')
+        support_level   = request.form.get('support_level', '')
 
         conn = sqlite3.connect('company.db')
         cursor = conn.cursor()
 
         cursor.execute("""
         INSERT INTO documents
-        (company_id, document_name,
-         issue_date, expiry_date,
-         reminder_days)
-        VALUES (?, ?, ?, ?, ?)
+        (company_id, document_name, issue_date, expiry_date,
+         reminder_days, status, firewall_vendor, firewall_model,
+         serial_number, license_type, renewal_cost,
+         renewal_period, support_level)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            company_id,
-            document_name,
-            issue_date,
-            expiry_date,
-            reminder_days
+            company_id, document_name, issue_date, expiry_date,
+            reminder_days, status, firewall_vendor, firewall_model,
+            serial_number, license_type, renewal_cost,
+            renewal_period, support_level
         ))
 
         conn.commit()
-
-        log_action(
-       session['user_id'],
-        f"Added document: {document_name}"
-    )
         conn.close()
 
-        return redirect('/')
+        return redirect('/documents')
 
-    return render_template('add_document.html')
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-
+    # GET — load companies for dropdown
     conn = sqlite3.connect('company.db')
     conn.row_factory = sqlite3.Row
 
-    total_companies = conn.execute(
-        "SELECT COUNT(*) FROM companies"
-    ).fetchone()[0]
-
-    documents = conn.execute(
-        "SELECT * FROM documents"
+    companies = conn.execute(
+        "SELECT id, company_name FROM companies ORDER BY company_name"
     ).fetchall()
 
     conn.close()
 
+    return render_template('add_document.html', companies=companies)
+
+@app.route('/dashboard')
+def dashboard():
+ 
+    conn = sqlite3.connect('company.db')
+    conn.row_factory = sqlite3.Row
+ 
+    total_companies = conn.execute(
+        "SELECT COUNT(*) FROM companies"
+    ).fetchone()[0]
+ 
+    documents = conn.execute(
+        "SELECT * FROM documents"
+    ).fetchall()
+ 
+    conn.close()
+ 
     alerts = get_renewal_alerts()
-
+ 
     today = datetime.today().date()
-
-    expired_count = 0
+ 
+    expired_count  = 0
     expiring_count = 0
-
+ 
     for doc in documents:
-
-        expiry_date = datetime.strptime(
-            doc['expiry_date'],
-            '%Y-%m-%d'
-        ).date()
-
+ 
+        if not doc['expiry_date']:
+            continue
+ 
+        try:
+            expiry_date = datetime.strptime(
+                doc['expiry_date'], '%Y-%m-%d'
+            ).date()
+        except (ValueError, TypeError):
+            continue
+ 
         days_left = (expiry_date - today).days
-
+ 
         if days_left < 0:
             expired_count += 1
-
         elif days_left <= 30:
             expiring_count += 1
-
+ 
+    total_documents = len(documents)
+ 
     return render_template(
         'dashboard.html',
         alerts=alerts,
         total_companies=total_companies,
-        total_documents=len(documents),
-        expired_count=expired_count,
-        expiring_count=expiring_count
+        total_documents=total_documents,
+        expiring_count=expiring_count,
+        expired_count=expired_count
     )
+
+
 @app.route('/expiring')
 @login_required
 def expiring():
@@ -812,10 +939,14 @@ def expiring():
     )
 
 
+# Replace your existing alert_30, alert_15, alert_7 routes in app.py with these:
+
 @app.route('/alerts/30')
 def alert_30():
 
-    target = datetime.today().date() + timedelta(days=30)
+    today = datetime.today().date()
+    target = today + timedelta(days=30)
+    lower = today + timedelta(days=16)   # 16-30 days window
 
     conn = sqlite3.connect('company.db')
     conn.row_factory = sqlite3.Row
@@ -823,8 +954,9 @@ def alert_30():
     docs = conn.execute("""
         SELECT *
         FROM documents
-        WHERE expiry_date <= ?
-    """, (target,)).fetchall()
+        WHERE expiry_date >= ?
+        AND expiry_date <= ?
+    """, (lower, target)).fetchall()
 
     conn.close()
 
@@ -835,11 +967,12 @@ def alert_30():
     )
 
 
-
 @app.route('/alerts/15')
 def alert_15():
 
-    target = datetime.today().date() + timedelta(days=15)
+    today = datetime.today().date()
+    target = today + timedelta(days=15)
+    lower = today + timedelta(days=8)    # 8-15 days window
 
     conn = sqlite3.connect('company.db')
     conn.row_factory = sqlite3.Row
@@ -847,8 +980,9 @@ def alert_15():
     docs = conn.execute("""
         SELECT *
         FROM documents
-        WHERE expiry_date <= ?
-    """, (target,)).fetchall()
+        WHERE expiry_date >= ?
+        AND expiry_date <= ?
+    """, (lower, target)).fetchall()
 
     conn.close()
 
@@ -862,7 +996,8 @@ def alert_15():
 @app.route('/alerts/7')
 def alert_7():
 
-    target = datetime.today().date() + timedelta(days=7)
+    today = datetime.today().date()
+    target = today + timedelta(days=7)
 
     conn = sqlite3.connect('company.db')
     conn.row_factory = sqlite3.Row
@@ -870,8 +1005,9 @@ def alert_7():
     docs = conn.execute("""
         SELECT *
         FROM documents
-        WHERE expiry_date <= ?
-    """, (target,)).fetchall()
+        WHERE expiry_date >= ?
+        AND expiry_date <= ?
+    """, (today, target)).fetchall()   # 0-7 days window (including today)
 
     conn.close()
 

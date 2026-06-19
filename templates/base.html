@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{% block title %}Company Compliance Network{% endblock %}</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -177,11 +178,57 @@
       font-size: 13px; color: var(--muted);
       margin-top: 1px;
     }
+  
+  
+.page-content {
+    flex: 1;
+    padding: 32px;
 
-    .page-content {
-      flex: 1;
-      padding: 32px;
-    }
+    background:
+  linear-gradient(
+      rgba(5,15,35,0.82),
+      rgba(5,15,35,0.82)
+  ),
+  url('/static/images/companies.png');
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.page-header{
+    background:rgba(10,25,55,0.55);
+    backdrop-filter:blur(12px);
+    border-radius:18px;
+    padding:20px;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.table-wrap{
+    background:rgba(10,25,55,.55);
+    backdrop-filter:blur(12px);
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 10px 40px rgba(0,0,0,.35);
+}
+
+.table-wrap thead{
+    background:rgba(37,99,235,.85);
+}
+
+.table-wrap th{
+    color:white;
+}
+
+.table-wrap td{
+    color:#f8fafc;
+}
+
+.table-wrap tbody tr:hover{
+    background:rgba(255,255,255,.05);
+}
+
 
     /* ── Cards ── */
     .card {
@@ -397,10 +444,10 @@
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-badge">
-        <div class="logo-icon">🛡️</div>
+        <div class="logo-icon">🌐</div>
         <div class="logo-text">
-          ComplianceNet
-          <span>Document Tracking</span>
+          <span style="color:#00c4ff;font-weight:900;font-size:15px;">NGN Global </span>
+              <span>Private Limited</span>
         </div>
       </div>
     </div>

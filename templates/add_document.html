@@ -3,45 +3,143 @@
 {% block topbar_title %}Add Document{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div>
+<div class="page-banner">
+ 
+  <div class="page-banner-overlay">
     <h1>Add Document</h1>
     <p>Attach a compliance document to a company</p>
   </div>
+</div>
+
+<div class="page-header">
+  <div></div>
   <a href="/documents" class="btn btn-outline btn-sm">← Back to Documents</a>
 </div>
 
-<div class="card" style="max-width:760px">
-  <div style="margin-bottom:24px">
-    <div class="card-title">Document Details</div>
-    <div class="card-sub">Enter the document information and set up renewal reminders</div>
-  </div>
-
+<div class="card" style="max-width:900px">
   <form method="POST" action="/add-document">
+
+    <!-- Section 1: Basic Info -->
+    <div style="margin-bottom:24px">
+      <div class="card-title">📋 Basic Information</div>
+      <div class="card-sub">Select the company and enter core document details</div>
+    </div>
+
     <div class="form-grid">
       <div class="form-group form-full">
-        <label class="form-label">Company ID *</label>
-        <input type="number" name="company_id" class="form-control" placeholder="Enter the company ID" required/>
-        <small style="color:var(--muted);font-size:12px">You can find the company ID in the Companies section</small>
+        <label class="form-label">Company *</label>
+        <select name="company_id" class="form-control" required>
+          <option value="" disabled selected>Select a company…</option>
+          {% for company in companies %}
+          <option value="{{ company['id'] }}">{{ company['company_name'] }}</option>
+          {% endfor %}
+        </select>
+        {% if not companies %}
+        <small style="color:var(--yellow);font-size:12px">No companies found — <a href="/add-company" style="color:var(--blue-light)">add one first</a>.</small>
+        {% endif %}
       </div>
+
       <div class="form-group form-full">
         <label class="form-label">Document Name *</label>
-        <input type="text" name="document_name" class="form-control" placeholder="e.g. Business License, Trade Certificate…" required/>
+        <input type="text" name="document_name" class="form-control" placeholder="e.g. Business License, Firewall License, Trade Certificate…" required/>
       </div>
+
       <div class="form-group">
         <label class="form-label">Issue Date</label>
         <input type="date" name="issue_date" class="form-control"/>
       </div>
+
       <div class="form-group">
         <label class="form-label">Expiry Date *</label>
         <input type="date" name="expiry_date" class="form-control" required/>
       </div>
+
       <div class="form-group">
         <label class="form-label">Reminder Days</label>
         <select name="reminder_days" class="form-control">
           <option value="7">7 days before expiry</option>
           <option value="15" selected>15 days before expiry</option>
           <option value="30">30 days before expiry</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-control">
+          <option value="Active" selected>✅ Active</option>
+          <option value="Expiring">⚠️ Expiring</option>
+          <option value="Expired">❌ Expired</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <!-- Section 2: Device / Vendor Details -->
+    <div style="margin-bottom:24px">
+      <div class="card-title">🔧 Device & Vendor Details</div>
+      <div class="card-sub">Enter hardware and vendor information related to this document</div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Firewall Vendor</label>
+        <input type="text" name="firewall_vendor" class="form-control" placeholder="e.g. Fortinet, Cisco, Palo Alto…"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Firewall Model</label>
+        <input type="text" name="firewall_model" class="form-control" placeholder="e.g. FortiGate 100F, ASA 5506…"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Serial Number</label>
+        <input type="text" name="serial_number" class="form-control" placeholder="e.g. FGT1234ABCD5678"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">License Type</label>
+        <input type="text" name="license_type" class="form-control" placeholder="e.g. Enterprise, UTM, Standard…"/>
+      </div>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <!-- Section 3: Renewal Details -->
+    <div style="margin-bottom:24px">
+      <div class="card-title">💰 Renewal Details</div>
+      <div class="card-sub">Cost, period and support information for renewal tracking</div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Renewal Cost</label>
+        <div style="position:relative">
+          <input type="text" name="renewal_cost" class="form-control" placeholder="e.g. 450,000 LKR" style="padding-left:14px"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Renewal Period</label>
+        <select name="renewal_period" class="form-control">
+          <option value="" disabled selected>Select period…</option>
+          <option value="1 Month">1 Month</option>
+          <option value="3 Months">3 Months</option>
+          <option value="6 Months">6 Months</option>
+          <option value="1 Year" selected>1 Year</option>
+          <option value="2 Years">2 Years</option>
+          <option value="3 Years">3 Years</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Support Level</label>
+        <select name="support_level" class="form-control">
+          <option value="" disabled selected>Select support level…</option>
+          <option value="8x5">8x5 (Business Hours)</option>
+          <option value="24x7" selected>24x7 (Round the Clock)</option>
+          <option value="Next Business Day">Next Business Day</option>
+          <option value="Best Effort">Best Effort</option>
         </select>
       </div>
     </div>
@@ -52,6 +150,7 @@
       <a href="/documents" class="btn btn-outline">Cancel</a>
       <button type="submit" class="btn btn-primary">📎 Add Document</button>
     </div>
+
   </form>
 </div>
 {% endblock %}

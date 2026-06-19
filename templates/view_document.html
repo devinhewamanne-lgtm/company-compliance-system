@@ -3,11 +3,16 @@
 {% block topbar_title %}Document Detail{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <div>
+<div class="page-banner">
+  <img src="{{ url_for('static', filename='images/hero.png') }}" alt="Document Detail"/>
+  <div class="page-banner-overlay">
     <h1>Document Detail</h1>
     <p>Full information for this compliance document</p>
   </div>
+</div>
+
+<div class="page-header">
+  <div></div>
   <div style="display:flex;gap:8px">
     {% if session.get('role') == 'admin' %}
     <a href="/edit-document/{{ document.id }}" class="btn btn-outline btn-sm">✏️ Edit</a>
@@ -16,32 +21,96 @@
   </div>
 </div>
 
-<div class="card" style="max-width:600px">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-    <div>
-      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Document Name</div>
-      <div style="font-size:16px;font-weight:700;color:var(--white)">{{ document.document_name }}</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px">
+
+  <!-- Basic Info -->
+  <div class="card">
+    <div style="font-size:13px;font-weight:700;color:var(--blue-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px">
+      📋 Basic Information
     </div>
-    <div>
-      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Document ID</div>
-      <div style="font-size:16px;font-weight:700;color:var(--white)">#{{ document.id }}</div>
-    </div>
-    <div>
-      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Issue Date</div>
-      <div style="font-size:15px;color:var(--text)">{{ document.issue_date or '—' }}</div>
-    </div>
-    <div>
-      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Expiry Date</div>
-      <div style="font-size:15px;color:var(--text)">{{ document.expiry_date }}</div>
-    </div>
-    <div>
-      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Reminder</div>
-      <div style="font-size:15px;color:var(--text)">{{ document.reminder_days }} days before expiry</div>
-    </div>
-    <div>
-      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Company ID</div>
-      <div style="font-size:15px;color:var(--text)">{{ document.company_id }}</div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Company</div>
+        <div style="font-size:15px;font-weight:700;color:var(--white)">{{ document.company_name or '—' }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Document Name</div>
+        <div style="font-size:15px;font-weight:700;color:var(--white)">{{ document.document_name }}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Issue Date</div>
+          <div style="font-size:14px;color:var(--text)">{{ document.issue_date or '—' }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Expiry Date</div>
+          <div style="font-size:14px;color:var(--red);font-weight:700">{{ document.expiry_date }}</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Reminder</div>
+          <div style="font-size:14px;color:var(--text)">{{ document.reminder_days or '—' }} days before</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Status</div>
+          {% if document.status == 'Expired' %}
+            <span class="badge badge-expired">Expired</span>
+          {% elif document.status == 'Expiring' %}
+            <span class="badge badge-expiring">Expiring</span>
+          {% else %}
+            <span class="badge badge-active">Active</span>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Device & Vendor -->
+  <div class="card">
+    <div style="font-size:13px;font-weight:700;color:var(--blue-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px">
+      🔧 Device & Vendor Details
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Firewall Vendor</div>
+        <div style="font-size:15px;font-weight:600;color:var(--white)">{{ document.firewall_vendor or '—' }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Firewall Model</div>
+        <div style="font-size:15px;font-weight:600;color:var(--white)">{{ document.firewall_model or '—' }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Serial Number</div>
+        <div style="font-size:13px;font-family:monospace;color:var(--cyan);background:rgba(0,196,255,0.08);padding:6px 10px;border-radius:6px;border:1px solid rgba(0,196,255,0.15)">{{ document.serial_number or '—' }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">License Type</div>
+        <div style="font-size:14px;color:var(--text)">{{ document.license_type or '—' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Renewal Details -->
+  <div class="card" style="grid-column:1/-1">
+    <div style="font-size:13px;font-weight:700;color:var(--blue-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px">
+      💰 Renewal Details
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Renewal Cost</div>
+        <div style="font-size:22px;font-weight:800;color:var(--green)">{{ document.renewal_cost or '—' }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Renewal Period</div>
+        <div style="font-size:18px;font-weight:700;color:var(--white)">{{ document.renewal_period or '—' }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Support Level</div>
+        <div style="font-size:18px;font-weight:700;color:var(--white)">{{ document.support_level or '—' }}</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}

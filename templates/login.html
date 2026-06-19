@@ -1,200 +1,100 @@
-{% extends 'base.html' %}
-{% block title %}Login — ComplianceNet{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Management System</title>
 
-{% block auth_content %}
-<style>
-  .login-page {
-    min-height: 100vh;
-    display: flex;
-    background: var(--navy);
-    overflow: hidden;
-    position: relative;
-  }
-  .login-page::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 800px 600px at 70% 50%, rgba(26,110,247,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 400px 400px at 10% 80%, rgba(0,196,255,0.07) 0%, transparent 60%);
-    pointer-events: none;
-  }
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
 
-  /* Left panel */
-  .login-left {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 64px 72px;
-    position: relative;
-    background:
-      linear-gradient(100deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.85) 45%, rgba(10,22,40,0.55) 100%),
-      url('{{ url_for('static', filename='images/Dashboard.webp') }}');
-    background-size: cover;
-    background-position: center;
-  }
+<div class="overlay">
 
-  .login-hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(26,110,247,0.12);
-    border: 1px solid rgba(26,110,247,0.25);
-    padding: 6px 14px; border-radius: 20px;
-    font-size: 12px; font-weight: 600; color: var(--blue-light);
-    margin-bottom: 32px;
-    width: fit-content;
-  }
+    <!-- Left Side -->
+    <div class="left-panel">
 
-  .login-hero-title {
-    font-size: 52px; font-weight: 800;
-    color: var(--white);
-    line-height: 1.1;
-    letter-spacing: -1px;
-    margin-bottom: 20px;
-  }
-  .login-hero-title .accent {
-    background: linear-gradient(90deg, var(--blue), var(--cyan));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+        <h1 class="company-name">
+        NGN Global
+        <span>Private Limited</span>
+        </h1>
 
-  .login-hero-desc {
-    font-size: 16px; color: var(--muted);
-    max-width: 400px; line-height: 1.7;
-    margin-bottom: 40px;
-  }
+        <p class="hero-text">
+        Enterprise Document Management System
+        </p>
 
-  .feature-list {
-    display: flex; flex-direction: column; gap: 14px;
-  }
-  .feature-item {
-    display: flex; align-items: center; gap: 12px;
-    font-size: 14px; color: var(--text);
-  }
-  .feature-dot {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: var(--blue-glow);
-    border: 1px solid rgba(26,110,247,0.25);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; flex-shrink: 0;
-  }
 
-  /* Right panel — form */
-  .login-right {
-    width: 480px;
-    background: var(--navy-mid);
-    border-left: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    justify-content: center;
-    padding: 56px 48px;
-    position: relative;
-  }
+        <div class="features">
 
-  .login-form-logo {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 40px;
-  }
-  .login-form-logo .icon {
-    width: 42px; height: 42px;
-    background: linear-gradient(135deg, var(--blue), var(--cyan));
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-  }
-  .login-form-logo .text {
-    font-size: 17px; font-weight: 800; color: var(--white);
-  }
-  .login-form-logo .text span {
-    display: block; font-size: 11px; font-weight: 400;
-    color: var(--muted);
-  }
+            <div class="feature">
+                <i class="fas fa-lock"></i>
+                <span>Secure Storage</span>
+            </div>
 
-  .login-form-title {
-    font-size: 24px; font-weight: 800; color: var(--white);
-    margin-bottom: 6px;
-  }
-  .login-form-sub {
-    font-size: 14px; color: var(--muted);
-    margin-bottom: 32px;
-  }
+            <div class="feature">
+                <i class="fas fa-bolt"></i>
+                <span>Easy Access</span>
+            </div>
 
-  .login-divider {
-    border: none; border-top: 1px solid var(--border);
-    margin: 24px 0;
-  }
+            <div class="feature">
+                <i class="fas fa-file-alt"></i>
+                <span>Document Control</span>
+            </div>
 
-  .login-footer-note {
-    font-size: 12px; color: var(--muted);
-    text-align: center; margin-top: 20px;
-  }
-</style>
+            <div class="feature">
+                <i class="fas fa-building"></i>
+                <span>Company Management</span>
+            </div>
 
-<div class="login-page">
-  <!-- Left Hero -->
-  <div class="login-left">
-    <div class="login-hero-badge">🛡️ Compliance Management Platform</div>
-    <h1 class="login-hero-title">
-      Company<br>
-      <span class="accent">Compliance</span><br>
-      Network
-    </h1>
-    <p class="login-hero-desc">
-      Monitor companies, documents and expiry alerts from one centralized platform.
-    </p>
-    <div class="feature-list">
-      <div class="feature-item">
-        <div class="feature-dot">📊</div>
-        Real-time dashboard & expiry analytics
-      </div>
-      <div class="feature-item">
-        <div class="feature-dot">🔔</div>
-        Automated 7, 15 &amp; 30-day renewal alerts
-      </div>
-      <div class="feature-item">
-        <div class="feature-dot">🏢</div>
-        Multi-company document tracking
-      </div>
-      <div class="feature-item">
-        <div class="feature-dot">📧</div>
-        Email reminders sent automatically
-      </div>
+        </div>
+
+        <div class="stats">
+            
+        </div>
+
     </div>
 
-    <div style="margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;font-weight:600">
-      A Product of NGN Global Private Limited
+    <!-- Login Card -->
+    <div class="login-card">
+
+        <div class="logo">
+            <i class="fas fa-folder-open"></i>
+        </div>
+
+        <h2>Welcome Back</h2>
+        <p>Sign in to continue</p>
+
+        <form method="POST">
+
+            <input type="text"
+                   name="username"
+                   placeholder="Username"
+                   required>
+
+            <input type="password"
+                   name="password"
+                   placeholder="Password"
+                   required>
+
+            <div class="options">
+                <label>
+                    <input type="checkbox">
+                    Remember Me
+                </label>
+
+                <a href="#">Forgot Password?</a>
+            </div>
+
+            <button type="submit">
+                Sign In
+            </button>
+
+        </form>
+
     </div>
-  </div>
 
-  <!-- Right Form -->
-  <div class="login-right">
-    <div class="login-form-logo">
-      <div class="icon">🛡️</div>
-      <div class="text">
-        ComplianceNet
-        <span>Secure Login</span>
-      </div>
-    </div>
-
-    <h2 class="login-form-title">Welcome back</h2>
-    <p class="login-form-sub">Sign in to your account to continue</p>
-
-    <form method="POST" action="/login">
-      <div class="form-group" style="margin-bottom:18px">
-        <label class="form-label">Username</label>
-        <input type="text" name="username" class="form-control" placeholder="Enter your username" required autocomplete="username"/>
-      </div>
-      <div class="form-group" style="margin-bottom:28px">
-        <label class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password"/>
-      </div>
-      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:13px; font-size:15px;">
-        Sign In →
-      </button>
-    </form>
-
-    <hr class="login-divider"/>
-   <p class="login-footer-note">© NGN Global Private Limited · Secured by ComplianceNet v2.0</p>
-  </div>
 </div>
-{% endblock %}
+
+</body>
+</html>

@@ -2,15 +2,175 @@
 {% block title %}Documents — ComplianceNet{% endblock %}
 {% block topbar_title %}Documents{% endblock %}
 
+{% block head %}
+<style>
+  /* ── Documents hero ── */
+  .doc-hero {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 32px;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 52px 48px 40px;
+  }
+  .doc-hero-bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    z-index: 0;
+  }
+  /* Light blue-white tint overlay — exactly like the sample */
+  .doc-hero-tint {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(220,235,255,0.82) 0%,
+      rgba(200,220,255,0.65) 40%,
+      rgba(180,210,255,0.40) 100%
+    );
+    z-index: 1;
+  }
+  .doc-hero-content {
+    position: relative; z-index: 2;
+  }
+  .doc-hero-title {
+    font-size: 52px; font-weight: 800;
+    color: #0d2148;
+    line-height: 1.1; margin-bottom: 6px;
+  }
+  .doc-hero-line {
+    width: 48px; height: 4px;
+    background: #1a6ef7;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+  .doc-hero-sub {
+    font-size: 16px; color: #3a5080;
+    margin-bottom: 28px; font-weight: 400;
+  }
+
+  /* Search bar */
+  .doc-search-wrap {
+    position: relative;
+    width: 380px;
+    margin-bottom: 40px;
+  }
+  .doc-search-wrap input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    border-radius: 50px;
+    border: 1.5px solid rgba(26,110,247,0.25);
+    background: rgba(255,255,255,0.85);
+    font-size: 15px; color: #0d2148;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .doc-search-wrap input:focus {
+    border-color: #1a6ef7;
+    box-shadow: 0 4px 20px rgba(26,110,247,0.2);
+  }
+  .doc-search-wrap input::placeholder { color: #7a91b8; }
+  .doc-search-icon {
+    position: absolute; left: 18px; top: 50%;
+    transform: translateY(-50%);
+    color: #7a91b8; font-size: 17px;
+    pointer-events: none;
+  }
+
+  /* Feature cards row */
+  .doc-feature-row {
+    display: flex; gap: 16px;
+    flex-wrap: wrap;
+  }
+  .doc-feature-card {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 14px;
+    padding: 20px 22px;
+    width: 180px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  }
+  .doc-feature-icon {
+    font-size: 26px; margin-bottom: 10px;
+    color: #1a6ef7;
+  }
+  .doc-feature-title {
+    font-size: 14px; font-weight: 700;
+    color: #0d2148; margin-bottom: 4px;
+  }
+  .doc-feature-desc {
+    font-size: 12px; color: #5a7099;
+    line-height: 1.4;
+  }
+
+  /* Add doc button on hero */
+  .doc-hero-btn {
+    position: absolute; top: 40px; right: 48px;
+    z-index: 3;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="page-header">
-  <div>
-    <h1>Documents</h1>
-    <p>All tracked compliance documents across companies</p>
+
+<!-- Hero Section -->
+<div class="doc-hero">
+  <img class="doc-hero-bg" src="{{ url_for('static', filename='images/documents.png') }}" alt="Documents"/>
+  <div class="doc-hero-tint"></div>
+
+  <!-- Add button top right -->
+  <div class="doc-hero-btn">
+    <a href="/add-document" class="btn btn-primary">📎 Add Document</a>
   </div>
-  <a href="/add-document" class="btn btn-primary btn-sm">📎 Add Document</a>
+
+  <div class="doc-hero-content">
+    <h1 class="doc-hero-title">Documents</h1>
+    <div class="doc-hero-line"></div>
+    <p class="doc-hero-sub">Manage, track and organize all your company documents in one place.</p>
+
+    <!-- Search -->
+    <form method="GET" action="/documents">
+      <div class="doc-search-wrap">
+        <span class="doc-search-icon">🔍</span>
+        <input type="text" name="search" placeholder="Search documents, companies…"
+          value="{{ request.args.get('search','') }}"/>
+      </div>
+    </form>
+
+    <!-- Feature cards -->
+    <div class="doc-feature-row">
+      <div class="doc-feature-card">
+        <div class="doc-feature-icon">📁</div>
+        <div class="doc-feature-title">Organize</div>
+        <div class="doc-feature-desc">Keep all documents well organized</div>
+      </div>
+      <div class="doc-feature-card">
+        <div class="doc-feature-icon">🛡️</div>
+        <div class="doc-feature-title">Secure</div>
+        <div class="doc-feature-desc">Role-based access and data security</div>
+      </div>
+      <div class="doc-feature-card">
+        <div class="doc-feature-icon">🔔</div>
+        <div class="doc-feature-title">Reminders</div>
+        <div class="doc-feature-desc">Get alerts before expiry dates</div>
+      </div>
+      <div class="doc-feature-card">
+        <div class="doc-feature-icon">📊</div>
+        <div class="doc-feature-title">Reports</div>
+        <div class="doc-feature-desc">Generate reports and export data</div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Documents Table -->
 {% if documents %}
 <div class="table-wrap">
   <table>
@@ -19,6 +179,14 @@
         <th>#</th>
         <th>Company</th>
         <th>Document Name</th>
+        <th>Firewall Vendor</th>
+        <th>Firewall Model</th>
+        <th>Serial No.</th>
+        <th>License Type</th>
+        <th>Renewal Cost</th>
+        <th>Renewal Period</th>
+        <th>Support Level</th>
+        <th>Issue Date</th>
         <th>Expiry Date</th>
         <th>Days Left</th>
         <th>Status</th>
@@ -29,8 +197,16 @@
       {% for doc in documents %}
       <tr>
         <td style="color:var(--muted)">{{ doc.id }}</td>
-        <td><span class="company-name">{{ doc.company_name }}</span></td>
-        <td>{{ doc.document_name }}</td>
+        <td><span class="company-name">{{ doc.company_name or '—' }}</span></td>
+        <td style="font-weight:600;color:var(--white)">{{ doc.document_name }}</td>
+        <td>{{ doc.firewall_vendor or '—' }}</td>
+        <td>{{ doc.firewall_model or '—' }}</td>
+        <td style="font-family:monospace;font-size:12px">{{ doc.serial_number or '—' }}</td>
+        <td>{{ doc.license_type or '—' }}</td>
+        <td style="color:var(--green);font-weight:600">{{ doc.renewal_cost or '—' }}</td>
+        <td>{{ doc.renewal_period or '—' }}</td>
+        <td>{{ doc.support_level or '—' }}</td>
+        <td style="color:var(--muted)">{{ doc.issue_date or '—' }}</td>
         <td>{{ doc.expiry_date }}</td>
         <td>
           {% if doc.days_left < 0 %}
@@ -44,9 +220,9 @@
           {% endif %}
         </td>
         <td>
-          {% if doc.status == 'Expired' %}
+          {% if doc.status == 'Expired' or doc.days_left < 0 %}
             <span class="badge badge-expired">Expired</span>
-          {% elif doc.status == 'Expiring Soon' %}
+          {% elif doc.status == 'Expiring' or doc.days_left <= 30 %}
             <span class="badge badge-expiring">Expiring Soon</span>
           {% else %}
             <span class="badge badge-active">Active</span>
@@ -74,4 +250,5 @@
   <a href="/add-document" class="btn btn-primary">📎 Add Document</a>
 </div>
 {% endif %}
+
 {% endblock %}
